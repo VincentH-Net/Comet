@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Maui.Graphics;
+using static System.Maui.Samples.Markup.Factory;
 using static System.Maui.Color;
 
 namespace System.Maui.Samples.Markup
@@ -19,6 +20,7 @@ namespace System.Maui.Samples.Markup
 			new ShapeView(new Rectangle()
 				.Fill(LinearGradient)
 				.Style(DrawingStyle.StrokeFill)),
+
 			new VStack
 			{
 				new Spacer(),
@@ -45,40 +47,114 @@ namespace System.Maui.Samples.Markup
 			}
 		};
 
-		View body2() => new ZStack
+		View bodyOriginal() => new VStack
 		{
-			new ShapeView(new Rectangle()
-				.Fill(LinearGradient)
-				.Style(DrawingStyle.StrokeFill)),
-			new VStack
-			{
-				new Spacer (),
-				new Label (() => $"I will run {count.Value} miles this month.")
-					.Color (White)
-					.TextLeft ()
-					.LinesWordWrap ()
-					.Margin (left:25, right:25)
-					.FillHorizontal ()
-					.FontSize (64)
-					.FontFamily ("DIN Alternate")
-					.Background ("#7258F6"),
-				new Button ("Increment", () => count.Value++)
-					.RoundedBorder (radius: 20, color: Transparent)
-					.Frame (height:76)
-					.Margin (30)
-					.FillHorizontal ()
-					.FontSize (32)
-					.FontFamily ("DIN Alternate")
-					.Color (White)
-					.Shadow (),
-				new Button ("Decrement", () => count.Value--),
-				new Spacer ()
-			}
+			new Spacer(),
+			new Label(() => $"I will run {count.Value} miles this month.")
+				.Color(Color.White)
+				.TextAlignment(TextAlignment.Left)
+				.LineBreakMode(LineBreakMode.WordWrap)
+				.Margin(left:25, right:25)
+				.FillHorizontal()
+				.FontSize(64)
+				.FontFamily("DIN Alternate")
+				.Background("#7258F6"),
+			new Button("Increment", () => count.Value++)
+				.RoundedBorder(radius: 20, color: Color.Transparent)
+				.Frame(height:76)
+				.Margin(30)
+				.FillHorizontal()
+				.FontSize(32)
+				.FontFamily("DIN Alternate")
+				.Color(Color.White)
+				.Shadow(),
+			new Button("Decrement", () => count.Value--),
+			new Spacer()
 		};
+
+		VStack bodyLessNoise() => VStack (
+			Spacer (),
+			Label (() => $"I will run {count.Value} miles this month.")
+				.Color (White, "#7258F6")
+				.TextLeft ()
+				.LinesWordWrap ()
+				.Margin (left:25, right:25)
+				.FillHorizontal ()
+				.Font (64, "DIN Alternate"),
+			Button ("Increment", () => count.Value++)
+				.RoundedBorder (radius:20, color:Transparent)
+				.Frame (height:76)
+				.Margin (30)
+				.FillHorizontal ()
+				.FontSize (32)
+				.Color (White)
+				.Shadow (),
+			Button ("Decrement", () => count.Value--),
+			Spacer ()
+		);
+
+
+		VStack bodySplit() => VStack (
+			Spacer (),
+			Label (Message)
+				.Color (White, "#7258F6")
+				.TextLeft ()
+				.LinesWordWrap ()
+				.Margin (left: 25, right: 25)
+				.FillHorizontal ()
+				.Font (64, "DIN Alternate"),
+			Button ("Increment", Increment)
+				.RoundedBorder (radius: 20, color: Transparent)
+				.Frame (height: 76)
+				.Margin (30)
+				.FillHorizontal ()
+				.FontSize (32)
+				.Color (White)
+				.Shadow (),
+			Button ("Decrement", Decrement),
+			Spacer ()
+		);
+
+		// Lines group helpers on category: content, border, layout
+		VStack bodyFormat() => VStack (
+			Spacer(),
+
+			Label (Message)
+				  .Color (White, "#7258F6") .Font (64, "DIN Alternate") .LinesWordWrap ()
+				  .Margin (left: 25, right: 25) .FillHorizontal() .TextLeft (),
+
+			Button ("Increment", Increment)
+				   .Color (White) .FontSize (32)
+				   .RoundedBorder (radius: 20, color: Transparent) .Shadow ()
+				   .Margin (30) .FillHorizontal () .Frame(height: 76),
+
+			Button ("Decrement", Decrement),
+
+			Spacer ()
+		);
+
+		string Message() => $"I will run {count.Value} miles this month.";
+		void Increment() => count.Value++;
+		void Decrement() => count.Value--;
+	}
+
+	public static class Factory
+	{
+		public static Label Label(Binding<string> value = null) => new Label(value);
+		public static Label Label(Func<string> value) => new Label(value);
+		public static Spacer Spacer() => new Spacer();
+		public static Button Button(Binding<string> text = null, Action action = null) => new Button(text, action);
+		public static VStack VStack(params View[] children)
+		{
+			var stack = new VStack();
+			for (int i = 0; i < children.Length; i++) stack.Insert(i, children[i]);
+			return stack;
+		}
 	}
 
 	public static class MarkupExtensions
 	{
+
 		// Generate fluid method for each enum value / class static constant:
 		public static T Color_Black<T>(this T view) where T : View => view.Color(Maui.Color.Black);
 		public static T Color_White<T>(this T view) where T : View => view.Color(Maui.Color.White);
@@ -92,12 +168,10 @@ namespace System.Maui.Samples.Markup
 		public static T Color<T>(this T view, float red, float green, float blue, float alpha) where T : View => view.Color(new Color(red, green, blue, alpha));
 
 		// Eliminate helper name, use parameter overload
-		public static T _<T>(this T view, Color background = null, Color color = null) where T : View
-		{
-			if (background != null) view.Background(background);
-			if (color != null) view.Color(color);
-			return view;
-		}
+		public static T Color<T>(this T view, Color color, Color background) where T : View => view.Color(color).Background(background);
+		public static T Color<T>(this T view, string color, string background) where T : View => view.Color(color).Background(background);
+		public static T Color<T>(this T view, Color color, string background) where T : View => view.Color(color).Background(background);
+		public static T Color<T>(this T view, string color, Color background) where T : View => view.Color(color).Background(background);
 
 		public static T TextNatural  <T>(this T view) where T : Label => view.TextAlignment(Maui.TextAlignment.Natural  );
 		public static T TextLeft     <T>(this T view) where T : Label => view.TextAlignment(Maui.TextAlignment.Left     );
@@ -126,6 +200,8 @@ namespace System.Maui.Samples.Markup
 		public static T LinesHeadTruncation  <T>(this T view) where T : Label => view.LineBreakMode(Maui.LineBreakMode.HeadTruncation  );
 		public static T LinesTailTruncation  <T>(this T view) where T : Label => view.LineBreakMode(Maui.LineBreakMode.TailTruncation  );
 		public static T LinesMiddleTruncation<T>(this T view) where T : Label => view.LineBreakMode(Maui.LineBreakMode.MiddleTruncation);
+
+		public static T Font<T>(this T view, float size, string family) where T : Label => view.FontSize(size).FontFamily(family);
 	}
 
 	// TODO: subchains is probably a standard pattern with fluent api's? -> look it up and align
