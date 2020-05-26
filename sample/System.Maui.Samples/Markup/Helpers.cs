@@ -27,7 +27,7 @@ namespace System.Maui.Samples.Markup
 		public static T Color<T>(this T view, Color color, string background) where T : View => view.Color(color).Background(background);
 		public static T Color<T>(this T view, string color, Color background) where T : View => view.Color(color).Background(background);
 
-		public static T Font<T>(this T view, float size, string family) where T : Label => view.FontSize(size).FontFamily(family);
+		public static T Font<T>(this T view, float size, string family = null) where T : View => view.FontSize(size).FontFamily(family);
 
 		// Eliminate instance value type name repetition: .Color(new Color("#ABCDEF")) -> .Color("#ABCDEF") by generating helpers from parameter ctor overloads:
 		public static T Color<T>(this T view, string colorAsHex) where T : View => view.Color(new Color(colorAsHex));

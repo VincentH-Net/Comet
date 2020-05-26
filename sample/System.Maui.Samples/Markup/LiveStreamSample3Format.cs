@@ -14,7 +14,7 @@ namespace System.Maui.Samples.Markup
 				  .Margin (left: 25, right: 25) .FillHorizontal () .TextLeft (),
 
 			Button ("Increment", Increment)
-				   .Color (White) .FontSize (32)
+				   .Color (White) .Font (32)
 				   .RoundedBorder (radius: 20, color: Transparent) .Shadow ()
 				   .Margin (30) .FillHorizontal () .Frame (height: 76),
 

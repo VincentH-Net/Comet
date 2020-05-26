@@ -22,7 +22,7 @@ namespace System.Maui.Samples.Markup
 				.Frame (height:76)
 				.Margin (30)
 				.FillHorizontal ()
-				.FontSize (32)
+				.Font (32)
 				.Color (White)
 				.Shadow (),
 			Button ("Decrement", () => count.Value--),
