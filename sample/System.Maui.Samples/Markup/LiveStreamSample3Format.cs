@@ -1,6 +1,6 @@
 using static System.Maui.Color;
 using static System.Maui.Samples.Markup.Factory;
-// Note that lines group helpers on category: content, border, layout
+
 namespace System.Maui.Samples.Markup
 {
 	public partial class LiveStreamSample3Format
@@ -24,3 +24,5 @@ namespace System.Maui.Samples.Markup
 		);
 	}
 }
+
+// Note that lines group helpers on category: content, border, layout
